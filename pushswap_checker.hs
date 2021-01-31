@@ -13,8 +13,8 @@ import System.Environment
 import System.Directory
 import System.Exit
 
-printOK :: ([Int], [Int]) -> IO()
-printOK (list_a, list_b) | not (isSorted (list_a, list_b)) = putStrLn $ "KO: " ++ show (list_a, list_b)
+printOK :: Maybe ([Int], [Int]) -> IO()
+printOK (Just (list_a, list_b)) | not (isSorted (list_a, list_b)) = putStrLn $ "KO: " ++ show (list_a, list_b)
     | otherwise  = putStrLn "OK"
 
 isSorted :: ([Int], [Int]) -> Bool
@@ -25,8 +25,8 @@ isSorted ([x], []) = True
 isSorted (list_a, list_b) | list_a == sort list_a && null list_b = True
                           | otherwise = False
 
-functions :: [String] -> ([Int], [Int]) -> ([Int], [Int])
-functions [] list = list
+functions :: [String] -> ([Int], [Int]) -> Maybe ([Int], [Int])
+functions [] list = Just list
 functions (x:xs) list
     | x == "sa" = functions xs (sa list)
     | x == "sb" = functions xs (sb list)
@@ -44,16 +44,12 @@ sa :: ([Int], [Int]) -> ([Int], [Int])
 sa ([x], lb) = ([], lb)
 sa ([], [] )= ([], []) 
 sa ([], list_a) = ([], list_a) 
-sa (list_a, []) = (list_a, [])
 sa (x:y:xs, lb) = (y:x:xs, lb)
 
 sb :: ([Int], [Int]) -> ([Int], [Int])
-sb ([], [] )= ([], [])
-sb ([_], [_]) = ([], [])
-sb ([], list_b) = ([], [])
-sb ([x], []) = ([], [])
-sb (list_b, []) = (list_b, [])
 sb (la, [x]) = (la, [])
+sb ([], [] )= ([], [])
+sb (list_b, []) = (list_b, [])
 sb (la, x:y:xs) = (la, y:x:xs)
 
 sc :: ([Int], [Int]) -> ([Int], [Int])
@@ -62,31 +58,20 @@ sc ([], list_b) = ([], list_b)
 sc (a:b:c, d:e:f) = (b:a:c, e:d:f)
 
 pa :: ([Int], [Int]) -> ([Int], [Int])
-pa ([], [] )= ([], []) 
-pa ([_], [_]) = ([], []) 
-pa ([], list_a) = ([], list_a) 
-pa ([x], []) = ([], [])
-pa (list_a, []) = (list_a, [])
-pa (x:xs, y:ys) = (y:(x:xs), ys)
+pa (la, []) = (la, [])
+pa (la, y:ys) = (y:la, ys)
 
 pb :: ([Int], [Int]) -> ([Int], [Int])
-pb ([], [] )= ([], [])
-pb ([_], [_]) = ([], [])
-pb ([], list_b) = ([], [])
-pb ([x], []) = ([], [])
-pb (list_b, []) = (list_b, [])
-pb (x:xs, y:ys) = (xs, x:(y:ys))
+pb ([], list_a) = ([], list_a)
+pb (x:xs, list_a) = (xs, x:list_a)
 
 ra :: ([Int], [Int]) -> ([Int], [Int])
 ra ([], list_b) = ([], list_b)
 ra (x:xs, lb) = (xs++[x], lb)
 
 rb :: ([Int], [Int]) -> ([Int], [Int])
-rb ([], list_b) = ([], list_b)
-rb ([_], [_]) = ([], [])
-rb ([x], []) = ([], [])
-rb (list_b, []) = (list_b, [])
-rb (la, x:xs) = (la, xs++[x])
+rb (list_a, []) = (list_a, [])
+rb (list_a, x:xs) = (list_a, xs++[x])
 
 rr :: ([Int], [Int]) -> ([Int], [Int])
 rr (list_a, []) = (list_a, [])
@@ -95,20 +80,16 @@ rr (x:xs, y:ys) = (xs++[x], ys++[y])
 
 rra :: ([Int], [Int]) -> ([Int], [Int])
 rra ([], list_b) = ([], list_b)
-rra (a:b, lb) = (b++[a], lb)
+rra (x:xs, lb) = (last xs:init (x:xs), lb)
 
 rrb :: ([Int], [Int]) -> ([Int], [Int])
-rrb ([], [] )= ([], [])
-rrb ([_], [_]) = ([], [])
-rrb ([], list_b) = ([], [])
-rrb ([x], []) = ([], [])
 rrb (list_b, []) = (list_b, [])
-rrb (la, b:a) = (la, a++[b])
+rrb (la, x:xs) = (la, last xs:init (x:xs))
 
 rrr :: ([Int], [Int]) -> ([Int], [Int])
 rrr (list_a, []) = (list_a, [])
 rrr ([], list_b) = ([], list_b)
-rrr (a:b, c:d) = (b++[a], d++[c])
+rrr (x:xs, y:ys) = (last xs:init (x:xs), last ys:init (y:ys))
 
 main :: IO ()
 main = do
@@ -116,5 +97,5 @@ main = do
     args <- getArgs
     let list_a = map read args :: [Int]
     let commands = functions (words input) (list_a, [])
-    printOK commands
+    printOK commands    
     exitSuccess
