@@ -23,22 +23,23 @@ isSorted ([], [] )= True -- si les deux listes sont vides
 isSorted ([_], [_]) = False -- jsp mais faut le mettre (ca impact pas le pb)
 isSorted ([], list_b) = False -- si la liste a est vide
 isSorted ([x], []) = True -- si la liste a ne contient qu'un seul element c'est ici que ca plante pcq le programme passe toujours is meme si y'a plusieurs elements
-isSorted (x:y:xs, list_b) = (x <= y) && isSorted (xs, list_b) -- si il y'a au moins deux elements et fonctions de tri
+isSorted (list_a, list_b) | list_a == sort (list_a) && list_b == [] = True
+                          | otherwise = False
 
 functions :: [String] -> ([Int], [Int]) -> ([Int], [Int])
-functions [] (list_a, list_b) = (list_a, list_b)
-functions (x:xs) (list_a, list_b)
-    | x == "sa" = sa (list_a, list_b)
-    | x == "sb" = sb (list_a, list_b)
-    | x == "sc" = sc (list_a, list_b)
-    | x == "pa" = pa (list_a, list_b)
-    | x == "pb" = pb (list_a, list_b)
-    | x == "ra" = ra (list_a, list_b)
-    | x == "rb" = rb (list_a, list_b)
-    | x == "rr" = rr (list_a, list_b)
-    | x == "rra" = rra (list_a, list_b)
-    | x == "rrb" = rrb (list_a, list_b)
-    | x == "rrr" = rrr (list_a, list_b)
+functions [] (list) = (list)
+functions (x:xs) (list)
+    | x == "sa" = functions xs (sa list)
+    | x == "sb" = functions xs (sb list)
+    | x == "sc" = functions xs (sc list)
+    | x == "pa" = functions xs (pa list)
+    | x == "pb" = functions xs (pb list)
+    | x == "ra" = functions xs (ra list)
+    | x == "rb" = functions xs (rb list)
+    | x == "rr" = functions xs (rr list)
+    | x == "rra" = functions xs (rra list)
+    | x == "rrb" = functions xs (rrb list)
+    | x == "rrr" = functions xs (rrr list)
 
 sa :: ([Int], [Int]) -> ([Int], [Int])
 sa ([x], lb) = ([], lb)
@@ -54,11 +55,21 @@ sc ([], list_b) = ([], list_b)
 sc (a:b:c, d:e:f) = (b:a:c, e:d:f)
 
 pa :: ([Int], [Int]) -> ([Int], [Int])
+pa ([], [] )= ([], []) -- si les deux listes sont vides
+pa ([_], [_]) = ([], []) -- jsp mais faut le mettre (ca impact pas le pb)
+pa ([], list_a) = ([], []) -- si la liste a est vide
+pa ([x], []) = ([], []) -- si la liste a ne contient qu'un seul element c'est ici que ca plante pcq le programme passe toujours is meme si y'a plusieurs elements
 pa (list_a, []) = (list_a, [])
+pa ([], list_a) = ([], list_a)
+pa ([], (x:xs)) = ([x], xs)
 pa (x:xs, y:ys) = (y:(x:xs), ys)
 
 pb :: ([Int], [Int]) -> ([Int], [Int])
-pb ([], list_b) = ([], list_b)
+pb ([], [] )= ([], []) -- si les deux listes sont vides
+pb ([_], [_]) = ([], []) -- jsp mais faut le mettre (ca impact pas le pb)
+pb ([], list_b) = ([], []) -- si la liste a est vide
+pb ([x], []) = ([], []) -- si la liste a ne contient qu'un seul element c'est ici que ca plante pcq le programme passe toujours is meme si y'a plusieurs elements
+pb (list_b, []) = (list_b, [])
 pb (x:xs, y:ys) = (xs, x:(y:ys))
 
 ra :: ([Int], [Int]) -> ([Int], [Int])
@@ -68,6 +79,7 @@ ra (x:xs, lb) = (xs++[x], lb)
 rb :: ([Int], [Int]) -> ([Int], [Int])
 rb ([], list_b) = ([], list_b)
 rb (la, x:xs) = (la, xs++[x])
+
 
 rr :: ([Int], [Int]) -> ([Int], [Int])
 rr (list_a, []) = (list_a, [])
