@@ -13,16 +13,15 @@ import System.Environment
 import System.Directory
 import System.Exit
 
-
 printOK :: ([Int], [Int]) -> IO()
 printOK (list_a, list_b) | not (isSorted (list_a, list_b)) = putStrLn $ "KO :" ++ show (list_a, list_b)
     | otherwise  = putStrLn "OK"
 
 isSorted :: ([Int], [Int]) -> Bool
-isSorted ([], [] )= True -- si les deux listes sont vides
-isSorted ([_], [_]) = False -- jsp mais faut le mettre (ca impact pas le pb)
-isSorted ([], list_b) = False -- si la liste a est vide
-isSorted ([x], []) = True -- si la liste a ne contient qu'un seul element c'est ici que ca plante pcq le programme passe toujours is meme si y'a plusieurs elements
+isSorted ([], [] )= True
+isSorted ([_], [_]) = False 
+isSorted ([], list_b) = False 
+isSorted ([x], []) = True
 isSorted (list_a, list_b) | list_a == sort (list_a) && list_b == [] = True
                           | otherwise = False
 
@@ -43,9 +42,17 @@ functions (x:xs) (list)
 
 sa :: ([Int], [Int]) -> ([Int], [Int])
 sa ([x], lb) = ([], lb)
+sa ([], [] )= ([], []) 
+sa ([], list_a) = ([], list_a) 
+sa (list_a, []) = (list_a, [])
 sa (x:y:xs, lb) = (y:x:xs, lb)
 
 sb :: ([Int], [Int]) -> ([Int], [Int])
+sb ([], [] )= ([], [])
+sb ([_], [_]) = ([], [])
+sb ([], list_b) = ([], [])
+sb ([x], []) = ([], [])
+sb (list_b, []) = (list_b, [])
 sb (la, [x]) = (la, [])
 sb (la, x:y:xs) = (la, y:x:xs)
 
@@ -55,20 +62,18 @@ sc ([], list_b) = ([], list_b)
 sc (a:b:c, d:e:f) = (b:a:c, e:d:f)
 
 pa :: ([Int], [Int]) -> ([Int], [Int])
-pa ([], [] )= ([], []) -- si les deux listes sont vides
-pa ([_], [_]) = ([], []) -- jsp mais faut le mettre (ca impact pas le pb)
-pa ([], list_a) = ([], []) -- si la liste a est vide
-pa ([x], []) = ([], []) -- si la liste a ne contient qu'un seul element c'est ici que ca plante pcq le programme passe toujours is meme si y'a plusieurs elements
+pa ([], [] )= ([], []) 
+pa ([_], [_]) = ([], []) 
+pa ([], list_a) = ([], list_a) 
+pa ([x], []) = ([], [])
 pa (list_a, []) = (list_a, [])
-pa ([], list_a) = ([], list_a)
-pa ([], (x:xs)) = ([x], xs)
 pa (x:xs, y:ys) = (y:(x:xs), ys)
 
 pb :: ([Int], [Int]) -> ([Int], [Int])
-pb ([], [] )= ([], []) -- si les deux listes sont vides
-pb ([_], [_]) = ([], []) -- jsp mais faut le mettre (ca impact pas le pb)
-pb ([], list_b) = ([], []) -- si la liste a est vide
-pb ([x], []) = ([], []) -- si la liste a ne contient qu'un seul element c'est ici que ca plante pcq le programme passe toujours is meme si y'a plusieurs elements
+pb ([], [] )= ([], [])
+pb ([_], [_]) = ([], [])
+pb ([], list_b) = ([], [])
+pb ([x], []) = ([], [])
 pb (list_b, []) = (list_b, [])
 pb (x:xs, y:ys) = (xs, x:(y:ys))
 
@@ -78,8 +83,10 @@ ra (x:xs, lb) = (xs++[x], lb)
 
 rb :: ([Int], [Int]) -> ([Int], [Int])
 rb ([], list_b) = ([], list_b)
+rb ([_], [_]) = ([], [])
+rb ([x], []) = ([], [])
+rb (list_b, []) = (list_b, [])
 rb (la, x:xs) = (la, xs++[x])
-
 
 rr :: ([Int], [Int]) -> ([Int], [Int])
 rr (list_a, []) = (list_a, [])
@@ -91,7 +98,11 @@ rra ([], list_b) = ([], list_b)
 rra (a:b, lb) = (b++[a], lb)
 
 rrb :: ([Int], [Int]) -> ([Int], [Int])
-rrb ([], list_b) = ([], list_b)
+rrb ([], [] )= ([], [])
+rrb ([_], [_]) = ([], [])
+rrb ([], list_b) = ([], [])
+rrb ([x], []) = ([], [])
+rrb (list_b, []) = (list_b, [])
 rrb (la, b:a) = (la, a++[b])
 
 rrr :: ([Int], [Int]) -> ([Int], [Int])
@@ -105,5 +116,5 @@ main = do
     args <- getArgs
     let list_a = map read args :: [Int]
     let commands = functions (words input) (list_a, [])
-    print commands
+    printOK commands
     exitSuccess
