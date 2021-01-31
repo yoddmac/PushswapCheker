@@ -14,20 +14,20 @@ import System.Directory
 import System.Exit
 
 printOK :: ([Int], [Int]) -> IO()
-printOK (list_a, list_b) | not (isSorted (list_a, list_b)) = putStrLn $ "KO :" ++ show (list_a, list_b)
+printOK (list_a, list_b) | not (isSorted (list_a, list_b)) = putStrLn $ "KO: " ++ show (list_a, list_b)
     | otherwise  = putStrLn "OK"
 
 isSorted :: ([Int], [Int]) -> Bool
 isSorted ([], [] )= True
-isSorted ([_], [_]) = False 
-isSorted ([], list_b) = False 
+isSorted ([_], [_]) = True 
+isSorted ([], list_b) = True 
 isSorted ([x], []) = True
-isSorted (list_a, list_b) | list_a == sort (list_a) && list_b == [] = True
+isSorted (list_a, list_b) | list_a == sort list_a && null list_b = True
                           | otherwise = False
 
 functions :: [String] -> ([Int], [Int]) -> ([Int], [Int])
-functions [] (list) = (list)
-functions (x:xs) (list)
+functions [] list = list
+functions (x:xs) list
     | x == "sa" = functions xs (sa list)
     | x == "sb" = functions xs (sb list)
     | x == "sc" = functions xs (sc list)
