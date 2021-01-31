@@ -97,5 +97,9 @@ main = do
     args <- getArgs
     let list_a = map read args :: [Int]
     let commands = functions (words input) (list_a, [])
-    printOK commands
-    exitSuccess
+    if isJust commands
+        then do 
+            printOK commands 
+            exitSuccess
+        else
+            exitWith (ExitFailure 84)
