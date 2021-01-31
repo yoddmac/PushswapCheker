@@ -14,7 +14,8 @@ import System.Directory
 import System.Exit
 
 printOK :: Maybe ([Int], [Int]) -> IO()
-printOK (Just (list_a, list_b)) | not (isSorted (list_a, list_b)) = putStrLn $ "KO: " ++ show (list_a, list_b)
+printOK (Just (la, lb)) 
+    | not (isSorted (la, lb)) = putStrLn $ "KO: " ++ show (la, lb)
     | otherwise  = putStrLn "OK"
 
 isSorted :: ([Int], [Int]) -> Bool
